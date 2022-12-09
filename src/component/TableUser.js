@@ -10,13 +10,14 @@ import ReactPaginate from "react-paginate";
 import Button from "react-bootstrap/Button";
 import ModalUser from "./ModalUser";
 import { toast } from "react-toastify";
-
+import _ from "lodash";
 function TableUser(props) {
   const [users, setUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [show, setShow] = useState(false);
   const [userUpdate, setUserUpdate] = useState(null);
   const [dataDefault, setDataDefault] = useState(null);
+  const [sortBy, setSortBy] = useState(true);
   useEffect(() => {
     getListUser(1);
   }, []);
@@ -83,6 +84,18 @@ function TableUser(props) {
       toast.success("xóa Thành công");
     }
   };
+  const handlesort = (sorttField) => {
+    setSortBy((sortBy) => !sortBy);
+    if (sortBy) {
+      let cloneListUser = _.cloneDeep(users);
+      cloneListUser = _.orderBy(cloneListUser, [sorttField], ["desc"]);
+      setUsers(cloneListUser);
+    } else {
+      let cloneListUser = _.cloneDeep(users);
+      cloneListUser = _.orderBy(cloneListUser, [sorttField], ["asc"]);
+      setUsers(cloneListUser);
+    }
+  };
   return (
     <>
       <div className="add-new__user d-flex justify-content-between align-items-center my-3">
@@ -95,9 +108,42 @@ function TableUser(props) {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Email</th>
-              <th>First Name</th>
+              <th>
+                <span>ID</span>
+                <b
+                  style={{ cursor: "pointer" }}
+                  className="mx-3 "
+                  onClick={() => {
+                    handlesort("id");
+                  }}
+                >
+                  Sort
+                </b>
+              </th>
+              <th>
+                <span>Mail</span>
+                <b
+                  style={{ cursor: "pointer" }}
+                  className="mx-3"
+                  onClick={() => {
+                    handlesort("email");
+                  }}
+                >
+                  Sort
+                </b>
+              </th>
+              <th>
+                <span>First Name</span>
+                <b
+                  style={{ cursor: "pointer" }}
+                  className="mx-3 "
+                  onClick={() => {
+                    handlesort("first_name");
+                  }}
+                >
+                  Sort
+                </b>
+              </th>
               <th>Last Name</th>
               <th>Action</th>
             </tr>
