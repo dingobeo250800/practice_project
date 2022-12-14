@@ -11,6 +11,8 @@ import Button from "react-bootstrap/Button";
 import ModalUser from "./ModalUser";
 import { toast } from "react-toastify";
 import _ from "lodash";
+import { CSVLink } from "react-csv";
+import Papa from "papaparse";
 function TableUser(props) {
   const [users, setUsers] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -18,6 +20,8 @@ function TableUser(props) {
   const [userUpdate, setUserUpdate] = useState(null);
   const [dataDefault, setDataDefault] = useState(null);
   const [sortBy, setSortBy] = useState(true);
+  const [serchMail, setSerchMail] = useState("");
+  const [dataExport, setDataExport] = useState([]);
   useEffect(() => {
     getListUser(1);
   }, []);
@@ -96,13 +100,126 @@ function TableUser(props) {
       setUsers(cloneListUser);
     }
   };
+  const handleChangeMail = (event) => {
+    rearchMail(event.target.value);
+  };
+  const rearchMail = (value) => {
+    if (value) {
+      setSerchMail(value);
+      let listSearchMail = users.filter((item) => item.email.includes(value));
+      setUsers(listSearchMail);
+    } else {
+      getListUser(1);
+    }
+  };
+
+  const getUserExport = (event, done) => {
+    let result = [];
+    if (users && users.length > 0) {
+      result.push(["ID", "Email", "First Name", "Last Name"]);
+      users.map((item, index) => {
+        let arr = [];
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name;
+        result.push(arr);
+      });
+      setDataExport(result);
+      done();
+    }
+  };
+
+  const handleImportCSV = (e) => {
+    if (e.target && e.target.files && e.target.files[0]) {
+      let file = e.target.files[0];
+      if (file.type !== "text/csv") {
+        toast.error("Only accept csv file...");
+        return;
+      } else {
+        Papa.parse(file, {
+          header: false,
+          complete: function (results) {
+            let rawCSV = results.data;
+            if (rawCSV.length > 0) {
+              if (rawCSV[0] && rawCSV[0].length === 3) {
+                if (
+                  rawCSV[0][0] !== "email" ||
+                  rawCSV[0][1] !== "first_name" ||
+                  rawCSV[0][2] !== "last_name"
+                ) {
+                  toast.error("tên trường bị sai...");
+                } else {
+                  console.log("oke done");
+                  let result = [];
+                  rawCSV.map((item, index) => {
+                    // console.log(index, item.length);
+                    if (index > 0 && item.length === 3) {
+                      let obj = {};
+                      obj.email = item[0];
+                      obj.first_name = item[1];
+                      obj.last_name = item[2];
+                      result.push(obj);
+                    }
+                  });
+                  setUsers(result);
+                  // console.log("resultresult", result);
+                }
+              } else {
+                toast.error("thừa trường rồi...");
+              }
+            } else {
+              toast.error("data rỗng...");
+            }
+          },
+        });
+      }
+    } else {
+      // toast.error("check file upload:" , file)
+    }
+    // console.log("check file", e.target.files[0]);
+  };
+
   return (
     <>
       <div className="add-new__user d-flex justify-content-between align-items-center my-3">
         <b>List User</b>
-        <Button variant="primary" onClick={handleShowUser}>
-          Add New user
-        </Button>
+        <>
+          <div className="flex">
+            <label className="btn btn-warning" htmlFor="myfile">
+              Import
+            </label>
+            <input
+              type="file"
+              id="myfile"
+              name="myfile"
+              hidden
+              onChange={(e) => handleImportCSV(e)}
+            />
+            <CSVLink
+              data={dataExport}
+              filename={"user-file.csv"}
+              className="btn btn-primary"
+              asyncOnClick={true}
+              onClick={(event, done) => getUserExport(event, done)}
+            >
+              Export
+            </CSVLink>
+
+            <Button variant="primary" onClick={handleShowUser}>
+              Add New user
+            </Button>
+          </div>
+        </>
+      </div>
+      <div className="row">
+        <div className="col-4 my-3">
+          <input
+            className="form-control"
+            placeholder="serch mail..."
+            onChange={handleChangeMail}
+          />
+        </div>
       </div>
       <div>
         <Table striped bordered hover>
