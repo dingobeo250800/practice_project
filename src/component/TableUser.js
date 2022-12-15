@@ -150,10 +150,8 @@ function TableUser(props) {
                 ) {
                   toast.error("tên trường bị sai...");
                 } else {
-                  console.log("oke done");
                   let result = [];
                   rawCSV.map((item, index) => {
-                    // console.log(index, item.length);
                     if (index > 0 && item.length === 3) {
                       let obj = {};
                       obj.email = item[0];
@@ -163,7 +161,6 @@ function TableUser(props) {
                     }
                   });
                   setUsers(result);
-                  // console.log("resultresult", result);
                 }
               } else {
                 toast.error("thừa trường rồi...");
@@ -175,9 +172,7 @@ function TableUser(props) {
         });
       }
     } else {
-      // toast.error("check file upload:" , file)
     }
-    // console.log("check file", e.target.files[0]);
   };
 
   return (

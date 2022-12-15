@@ -4,14 +4,23 @@ import Header from "./component/Header";
 import TableUser from "./component/TableUser";
 import Container from "react-bootstrap/Container";
 import { ToastContainer } from "react-toastify";
-// import { ToastContainer } from "react-toastify";
+
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./component/HomePage";
+import Login from "./component/Login";
+import Logout from "./component/Logout";
 function App() {
   return (
     <>
       <div className="App">
         <Header />
         <Container>
-          <TableUser />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/user" element={<TableUser />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+          </Routes>
         </Container>
         <ToastContainer
           position="top-right"
@@ -23,7 +32,6 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          // theme="light"
         />
       </div>
     </>
