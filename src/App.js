@@ -3,13 +3,10 @@ import Container from "react-bootstrap/Container";
 import { ToastContainer } from "react-toastify";
 import "./App.scss";
 import Header from "./component/Header";
-import TableUser from "./component/TableUser";
-
 import { useContext, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
-import HomePage from "./component/HomePage";
-import Login from "./component/Login";
+
 import { UserContext } from "./context/UseContext";
+import AppRoutes from "./routes/AppRoutes";
 function App() {
   const { login } = useContext(UserContext);
   useEffect(() => {
@@ -22,11 +19,7 @@ function App() {
       <div className="App">
         <Header />
         <Container>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/user" element={<TableUser />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+          <AppRoutes />
         </Container>
         <ToastContainer
           position="top-right"
