@@ -1,15 +1,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import Container from "react-bootstrap/Container";
+import { ToastContainer } from "react-toastify";
 import "./App.scss";
 import Header from "./component/Header";
 import TableUser from "./component/TableUser";
-import Container from "react-bootstrap/Container";
-import { ToastContainer } from "react-toastify";
 
-import { Routes, Route } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 import HomePage from "./component/HomePage";
 import Login from "./component/Login";
-import Logout from "./component/Logout";
+import { UserContext } from "./context/UseContext";
 function App() {
+  const { login } = useContext(UserContext);
+  useEffect(() => {
+    if (localStorage.getItem("tokenLogin")) {
+      login(localStorage.getItem("tokenLogin"), localStorage.getItem("email"));
+    }
+  }, []);
   return (
     <>
       <div className="App">
@@ -19,7 +26,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/user" element={<TableUser />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
           </Routes>
         </Container>
         <ToastContainer

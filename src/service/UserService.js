@@ -34,4 +34,14 @@ const deleteUser = (id) => {
   });
   return request;
 };
-export { getUsers, addUsers, updateUsers, deleteUser };
+
+const loginUser = (email, password) => {
+  const url = `/api/login`;
+  const request = instance_axios.request({
+    url: url,
+    method: "POST",
+    data: { email: email, password: password },
+  });
+  return request;
+};
+export { getUsers, addUsers, updateUsers, deleteUser, loginUser };

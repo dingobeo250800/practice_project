@@ -1,10 +1,20 @@
+import { useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { UserContext } from "../context/UseContext";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useContext(UserContext);
+  const handleLogout = () => {
+    logout();
+    toast.success("đã đăng xuất thành công");
+    navigate("/");
+  };
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -13,32 +23,43 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
-            <NavLink to="/" className="nav-link">
-              Home
-            </NavLink>
-            <NavLink to="user" className="nav-link">
-              User Manager
-            </NavLink>
-          </Nav>
-          <Nav>
-            <NavDropdown title="Setting" id="collasible-nav-dropdown" bg="dark">
-              <NavLink
-                className="nav-link"
-                style={{ color: "black" }}
-                to="/login"
-              >
-                Login
-              </NavLink>
-              <NavLink
-                className="nav-link"
-                style={{ color: "black" }}
-                to="/logout"
-              >
-                Logout
-              </NavLink>
-            </NavDropdown>
-          </Nav>
+          {((user && user.auth === true) ||
+            window.location.pathname === "/") && (
+            <>
+              <Nav className="me-auto">
+                <NavLink to="/" className="nav-link">
+                  Home
+                </NavLink>
+                <NavLink to="user" className="nav-link">
+                  User Manager
+                </NavLink>
+              </Nav>
+              <Nav>
+                {user && user.email && (
+                  <span className="nav-link">wellcome: {user.email}</span>
+                )}
+                <NavDropdown
+                  title="Setting"
+                  id="collasible-nav-dropdown"
+                  bg="dark"
+                >
+                  {user && user.auth === true ? (
+                    <NavDropdown.Item onClick={handleLogout}>
+                      Log-out
+                    </NavDropdown.Item>
+                  ) : (
+                    <NavLink
+                      className="dropdown-item"
+                      style={{ color: "black" }}
+                      to="/login"
+                    >
+                      Login
+                    </NavLink>
+                  )}
+                </NavDropdown>
+              </Nav>
+            </>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
