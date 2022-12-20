@@ -5,7 +5,7 @@ function HomePage(props) {
     <div>
       <b>Xin chào các bạn!</b>
       <p>
-        Lưu ý: khi bạn ấn vào phần quản lý user thì sẽ phải đăng nhập nhé....
+        Lưu ý: khi bạn ấn vào phần quản lý user thì sẽ phải đăng nhập nhé..^^
       </p>
       <p>phần quản lý người dùng sẽ có những chức năng cơ bản.</p>
       <p>
